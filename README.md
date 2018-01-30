@@ -1,5 +1,6 @@
 # anti-counterfeit-android
-模拟器检测，多开检测，Hook检测，Root检测,
+模拟器检测，多开检测，Hook检测，Root检测。
+
 
 4个Java类，直接拷贝使用即可。
 ## 模拟器检测
@@ -10,6 +11,7 @@
  boolean isHook = CheckHook.isHook(context);
 ## Root检测
  boolean isRoot = CheckRoot.isDeviceRooted();
+ 
  
  参考：
  
