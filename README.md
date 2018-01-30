@@ -305,10 +305,15 @@ for(ApplicationInfo applicationInfo : applicationInfoList) {
 写出来，是希望能集思广益，获得更多的反制思路，提高恶意分子伪造设备的成本。（其实是希望碰到大佬指点，提高下本不成器菜鸟的知识水平😄）有更深入实践的同学，求评论，求私信。
 
 参考文章：
-[Android反调试之 AntiEmulator 检测安卓模拟器](http://blog.csdn.net/earbao/article/details/51455564)、
+
+[Android反调试之 AntiEmulator 检测安卓模拟器](http://blog.csdn.net/earbao/article/details/51455564)
+
 [基于文件特征的Android模拟器检测](https://mp.weixin.qq.com/s/sl33d2pnyLMJ-fUY_DfBDw)
+
 [Android Java层的anti-hooking技巧](http://www.droidsec.cn/android-java%E5%B1%82%E7%9A%84anti-hooking%E6%8A%80%E5%B7%A7/)
+
 [Android虚拟机多开检测](https://www.jianshu.com/p/216d65d9971e)
 
 参考Demo: 
+
 [anti-counterfeit-android](https://github.com/Labmem003/anti-counterfeit-android)。
