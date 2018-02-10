@@ -12,9 +12,15 @@
 ## Root检测
  boolean isRoot = CheckRoot.isDeviceRooted();
  
-## AccessibilityService检测
-TODO...
+## TODO...
+1. AccessibilityService检测
+2. 模拟器检测增加 Cache 特征识别
 
+      参考：https://github.com/happylishang/CacheEmulatorChecker
+
+3. Hook检测增加 Native层检测
+
+      参考：https://tech.meituan.com/android_anti_hooking.html
  ------------------------------
  
  近两年，Android端的虚拟化技术和群控技术发展急速，带来很多好玩产品和便利工具。但是作为App开发者就头疼了，恶意用户（比如不文明用户、比如刷单）利用这些技术，作恶门槛低得不知道哪里去。我们需要思考怎么识别和防御了。
