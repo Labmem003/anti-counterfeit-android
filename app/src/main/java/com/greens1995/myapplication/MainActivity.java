@@ -13,7 +13,7 @@ public class MainActivity extends AppCompatActivity {
         boolean isHook = CheckHook.isHook(this);
         boolean isRoot = CheckRoot.isDeviceRooted();
         boolean isVirtual = CheckVirtual.isRunInVirtual();
-        boolean isEmulator = EmulatorDetector.isEmulator();
+        boolean isEmulator = EmulatorDetector.isEmulator(this);
         ((TextView) findViewById(R.id.text)).setText("is virtual " + isVirtual + ",isHook " + isHook + ",isRoot " + isRoot+ ",isEmulator " +isEmulator);
     }
 }

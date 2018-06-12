@@ -20,12 +20,17 @@ import java.io.File;
  * 在原Repo基础上增加了一些判定
  */
 public class EmulatorDetector {
-    
+
     private static final String TAG = "EmulatorDetector";
-    
+
     private static int rating = -1;
-    
-    public static boolean isEmulatorAbsoluly() {
+
+    public static boolean isEmulatorAbsoluly(Context context) {
+
+        if (mayOnEmulatorViaQEMU(context)) {
+            return true;
+        }
+
         if (Build.PRODUCT.contains("sdk") ||
             Build.PRODUCT.contains("sdk_x86") ||
             Build.PRODUCT.contains("sdk_google") ||
@@ -75,17 +80,17 @@ public class EmulatorDetector {
             Build.FINGERPRINT.contains("generic/vbox86p/vbox86p")) {
             return true;
         }
-        
+
         return false;
     }
-    
+
     /**
      * Detects if app is currenly running on emulator, or real device.
      *
      * @return true for emulator, false for real devices
      */
-    public static boolean isEmulator() {
-        if (isEmulatorAbsoluly()) {
+    public static boolean isEmulator(Context context) {
+        if (isEmulatorAbsoluly(context)) {
             return true;
         }
         int newRating = 0;
@@ -102,7 +107,7 @@ public class EmulatorDetector {
                 Build.PRODUCT.contains("aries")) {
                 newRating++;
             }
-            
+
             if (Build.MANUFACTURER.equals("unknown") ||
                 Build.MANUFACTURER.equals("Genymotion") ||
                 Build.MANUFACTURER.contains("Andy") ||
@@ -111,14 +116,14 @@ public class EmulatorDetector {
                 Build.MANUFACTURER.contains("TiantianVM")) {
                 newRating++;
             }
-            
+
             if (Build.BRAND.equals("generic") ||
                 Build.BRAND.equals("generic_x86") ||
                 Build.BRAND.equals("TTVM") ||
                 Build.BRAND.contains("Andy")) {
                 newRating++;
             }
-            
+
             if (Build.DEVICE.contains("generic") ||
                 Build.DEVICE.contains("generic_x86") ||
                 Build.DEVICE.contains("Andy") ||
@@ -130,7 +135,7 @@ public class EmulatorDetector {
                 Build.DEVICE.contains("aries")) {
                 newRating++;
             }
-            
+
             if (Build.MODEL.equals("sdk") ||
                 Build.MODEL.contains("Emulator") ||
                 Build.MODEL.equals("google_sdk") ||
@@ -141,14 +146,14 @@ public class EmulatorDetector {
                 Build.MODEL.equals("Android SDK built for x86")) {
                 newRating++;
             }
-            
+
             if (Build.HARDWARE.equals("goldfish") ||
                 Build.HARDWARE.equals("vbox86") ||
                 Build.HARDWARE.contains("nox") ||
                 Build.HARDWARE.contains("ttVM_x86")) {
                 newRating++;
             }
-            
+
             if (Build.FINGERPRINT.contains("generic/sdk/generic") ||
                 Build.FINGERPRINT.contains("generic_x86/sdk_x86/generic_x86") ||
                 Build.FINGERPRINT.contains("Andy") ||
@@ -159,7 +164,7 @@ public class EmulatorDetector {
                 Build.FINGERPRINT.contains("generic/vbox86p/vbox86p")) {
                 newRating++;
             }
-            
+
             try {
                 String opengl = android.opengl.GLES20.glGetString(android.opengl.GLES20.GL_RENDERER);
                 if (opengl != null) {
@@ -172,7 +177,7 @@ public class EmulatorDetector {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            
+
             try {
                 File sharedFolder = new File(Environment
                     .getExternalStorageDirectory().toString()
@@ -180,7 +185,7 @@ public class EmulatorDetector {
                     + "windows"
                     + File.separatorChar
                     + "BstSharedFolder");
-                
+
                 if (sharedFolder.exists()) {
                     newRating += 10;
                 }
@@ -191,7 +196,41 @@ public class EmulatorDetector {
         }
         return rating > 3;//不能再少了，否则有可能误判，若增减了新的嫌疑度判定属性，要重新评估该值
     }
-    
+
+
+    private static final boolean mayOnEmulatorViaQEMU(Context context) {
+        String qemu = getProp(context, "ro.kernel.qemu");
+        return "1".equals(qemu);
+    }
+
+//    /**
+//     * 有权限可以打开这个判断
+//     * @param context
+//     * @return
+//     */
+//    private static final boolean mayOnEmulatorViaTelephonyDeviceId(Context context) {
+//        TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+//        if (tm == null) {
+//            return false;
+//        }
+//
+//        String deviceId = tm.getDeviceId();
+//        if (TextUtils.isEmpty(deviceId)) {
+//            return false;
+//        }
+//
+//        /**
+//         * device id of telephony likes '0*'
+//         */
+//        for (int i = 0; i < deviceId.length(); i++) {
+//            if (deviceId.charAt(i) != '0') {
+//                return false;
+//            }
+//        }
+//
+//        return true;
+//    }
+
     /**
      * Returns string with human-readable listing of Build.* parameters used in {@link #isEmulator()} method.
      *
@@ -211,12 +250,26 @@ public class EmulatorDetector {
             "GL_VERSION: " + android.opengl.GLES20.glGetString(android.opengl.GLES20.GL_VERSION) + "\n" +
             "GL_EXTENSIONS: " + android.opengl.GLES20.glGetString(android.opengl.GLES20.GL_EXTENSIONS) + "\n";
     }
-    
+
+
+    private static final String getProp(Context context, String property) {
+        try {
+            ClassLoader cl = context.getClassLoader();
+            Class<?> SystemProperties = cl.loadClass("android.os.SystemProperties");
+            Method method = SystemProperties.getMethod("get", String.class);
+            Object[] params = new Object[1];
+            params[0] = property;
+            return (String) method.invoke(SystemProperties, params);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     /**
      * Prints all Build.* parameters used in {@link #isEmulator()} method to logcat.
      */
     public static void logcat() {
         Log.d(TAG, getDeviceListing());
     }
-    
+
 }
