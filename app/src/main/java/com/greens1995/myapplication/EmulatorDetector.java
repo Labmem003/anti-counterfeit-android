@@ -1,10 +1,12 @@
 package com.greens1995.myapplication;
 
+import android.content.Context;
 import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
 import java.io.File;
+import java.lang.reflect.Method;
 
 /**
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
